@@ -33,7 +33,7 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/utilify
 
 ### Payment (Razorpay)
 ```
-RAZORPAY_KEY_ID=rzp_test_xxxxx
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_xxxxx
 RAZORPAY_KEY_SECRET=your_secret
 RAZORPAY_WEBHOOK_SECRET=your_webhook_secret
 ```
