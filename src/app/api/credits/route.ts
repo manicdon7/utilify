@@ -6,12 +6,12 @@ import { User } from "@/lib/models/user";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   await connectDB();
-  const user = await User.findById(session.user.id).select("credits plan geminiApiKey");
+  const user = await User.findOne({ email: session.user.email }).select("credits plan geminiApiKey");
 
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });

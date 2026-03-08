@@ -6,7 +6,7 @@ import { User } from "@/lib/models/user";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
@@ -17,19 +17,19 @@ export async function POST(req: NextRequest) {
   }
 
   await connectDB();
-  await User.findByIdAndUpdate(session.user.id, { geminiApiKey: apiKey });
+  await User.findOneAndUpdate({ email: session.user.email }, { geminiApiKey: apiKey });
 
   return NextResponse.json({ message: "API key saved successfully" });
 }
 
 export async function DELETE() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   await connectDB();
-  await User.findByIdAndUpdate(session.user.id, { $unset: { geminiApiKey: 1 } });
+  await User.findOneAndUpdate({ email: session.user.email }, { $unset: { geminiApiKey: 1 } });
 
   return NextResponse.json({ message: "API key removed" });
 }

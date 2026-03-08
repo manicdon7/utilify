@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json(
         { error: "Please sign in to use AI tools. Sign up to get free credits!" },
         { status: 401 },
@@ -59,10 +59,10 @@ export async function POST(req: NextRequest) {
     }
 
     await connectDB();
-    const user = await User.findById(session.user.id);
+    const user = await User.findOne({ email: session.user.email });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "User not found. Please sign out and sign in again." }, { status: 404 });
     }
 
     const userApiKey = user.geminiApiKey || undefined;

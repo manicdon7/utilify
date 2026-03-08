@@ -9,7 +9,7 @@ import crypto from "crypto";
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
@@ -35,7 +35,12 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
-    const payment = await Payment.findOne({ orderId, userId: session.user.id });
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const payment = await Payment.findOne({ orderId, userId: user._id });
     if (!payment) {
       return NextResponse.json({ error: "Payment order not found" }, { status: 404 });
     }
@@ -49,11 +54,6 @@ export async function POST(req: NextRequest) {
     payment.status = "paid";
     await payment.save();
 
-    const user = await User.findById(session.user.id);
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
     user.credits += payment.credits;
     if (payment.plan === "pro" || (payment.plan === "basic" && user.plan === "free")) {
       user.plan = payment.plan;
@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
       plan: user.plan,
     });
   } catch (error) {
+    console.error("Payment verify error:", error);
     const message = error instanceof Error ? error.message : "Payment verification failed";
     return NextResponse.json({ error: message }, { status: 500 });
   }

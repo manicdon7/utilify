@@ -15,42 +15,42 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      return NextResponse.json({ error: "Not authenticated. Please sign in first." }, { status: 401 });
     }
 
     const { plan } = await req.json();
     const planConfig = PLANS[plan];
 
     if (!planConfig) {
-      return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+      return NextResponse.json({ error: "Invalid plan selected" }, { status: 400 });
     }
 
     const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!keyId || !keySecret) {
-      return NextResponse.json({ error: "Payment gateway not configured" }, { status: 503 });
+      return NextResponse.json({ error: "Payment gateway not configured. Please contact support." }, { status: 503 });
     }
 
     const amount = parseInt(process.env[planConfig.priceEnv] || "99", 10);
     const credits = parseInt(process.env[planConfig.creditsEnv] || String(planConfig.credits), 10);
     const currency = process.env.CURRENCY || "INR";
 
+    await connectDB();
+
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) {
+      return NextResponse.json({ error: "User account not found. Please sign out and sign in again." }, { status: 404 });
+    }
+
     const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
 
     const order = await razorpay.orders.create({
       amount: amount * 100,
       currency,
-      receipt: `utilify_${session.user.id}_${Date.now()}`,
-      notes: { userId: session.user.id, plan, credits: String(credits) },
+      receipt: `utilify_${user._id}_${Date.now()}`,
+      notes: { userId: user._id.toString(), plan, credits: String(credits) },
     });
-
-    await connectDB();
-
-    const user = await User.findById(session.user.id);
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
 
     await Payment.create({
       userId: user._id,
@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
       keyId,
     });
   } catch (error) {
+    console.error("Payment order error:", error);
     const message = error instanceof Error ? error.message : "Payment order creation failed";
     return NextResponse.json({ error: message }, { status: 500 });
   }
