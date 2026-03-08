@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { Menu, X, Sun, Moon, Wrench } from "lucide-react";
-import { categories } from "@/lib/constants";
 import { UserMenu } from "@/components/auth/user-menu";
 
 export function Navbar() {
@@ -23,11 +22,9 @@ export function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
-          {categories.slice(0, 4).map((c) => (
-            <Link key={c.slug} href={`/#${c.slug}`} className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-              {c.name.split(" ")[0]}
-            </Link>
-          ))}
+          <Link href="/tools" className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+            Tools
+          </Link>
           <Link href="/pricing" className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
             Pricing
           </Link>
@@ -57,16 +54,9 @@ export function Navbar() {
       {menuOpen && (
         <div className="border-t border-zinc-200 bg-white px-4 py-4 md:hidden dark:border-zinc-800 dark:bg-zinc-950">
           <nav className="flex flex-col gap-3">
-            {categories.map((c) => (
-              <Link
-                key={c.slug}
-                href={`/#${c.slug}`}
-                onClick={() => setMenuOpen(false)}
-                className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-              >
-                {c.name}
-              </Link>
-            ))}
+            <Link href="/tools" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+              Tools
+            </Link>
             <Link href="/pricing" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
               Pricing
             </Link>
