@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
         email: true,
       },
       reminder_enable: false,
-      callback_url: `${process.env.NEXTAUTH_URL}/payment/callback`,
+      callback_url: `${process.env.NEXTAUTH_URL}/payment/redirect`,
       callback_method: "get",
       notes: {
         userId: user._id.toString(),
