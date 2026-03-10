@@ -16,14 +16,14 @@ export const metadata: Metadata = {
     template: "%s | Utilify",
   },
   description:
-    "50+ free online tools: PDF converter, image compressor, JSON formatter, password generator, and more. No sign-up required.",
+    "60+ free online tools: PDF converter, AI writing, image tools, developer utilities, and more. No sign-up required.",
   keywords: [
     "online tools", "PDF converter", "image compressor", "JSON formatter",
     "password generator", "free tools", "developer tools", "SEO tools",
   ],
   openGraph: {
     title: "Utilify - Free Online Tools for Everyone",
-    description: "50+ free online tools for productivity, development, and creativity.",
+    description: "60+ free online tools for productivity, development, and creativity.",
     type: "website",
     siteName: "Utilify",
   },

@@ -34,6 +34,46 @@ const PROMPTS: Record<string, { system: string; buildPrompt: (input: string, opt
     system: "You are an email marketing expert. Generate subject lines that drive opens.",
     buildPrompt: (input, options) => `Generate 10 email subject lines for: ${input}${options ? `. Tone: ${options}` : ""}. Return each on a new line.`,
   },
+  "ai-story": {
+    system: "You are a creative fiction writer. Write engaging, well-structured short stories.",
+    buildPrompt: (input, options) => `Write a short story (2-4 paragraphs) based on this prompt: ${input}${options ? `. Style: ${options}` : ""}. Make it engaging and vivid.`,
+  },
+  "ai-poem": {
+    system: "You are a poet. Create original poems in various styles.",
+    buildPrompt: (input, options) => `Write a poem about: ${input}${options ? `. Style: ${options}` : ""}. Make it creative and evocative.`,
+  },
+  "explain-simple": {
+    system: "You explain complex topics in simple terms a 5-year-old could understand. Use analogies and avoid jargon.",
+    buildPrompt: (input) => `Explain this in simple terms: ${input}`,
+  },
+  "ai-code-explainer": {
+    system: "You explain code in plain English. Describe what each part does and the overall purpose.",
+    buildPrompt: (input) => `Explain this code in plain English. Describe what it does and how it works:\n\n\`\`\`\n${input}\n\`\`\``,
+  },
+  "ai-sql": {
+    system: "You are a SQL expert. Generate correct, efficient SQL queries. Use standard SQL syntax.",
+    buildPrompt: (input, options) => `Generate a SQL query for: ${input}${options ? `. Database: ${options}` : ""}. Return only the SQL, no explanation unless asked.`,
+  },
+  "ai-bio": {
+    system: "You create compelling social media bios. Keep them concise and engaging.",
+    buildPrompt: (input, options) => `Create a ${options || "professional"} bio for: ${input}. Provide 3-5 variations, each on a new line.`,
+  },
+  "ai-product": {
+    system: "You write compelling product descriptions that drive sales. Highlight benefits and features.",
+    buildPrompt: (input, options) => `Write a product description for: ${input}${options ? `. Tone: ${options}` : ""}. Make it persuasive and SEO-friendly.`,
+  },
+  "ai-interview": {
+    system: "You generate relevant interview questions for various roles and topics.",
+    buildPrompt: (input, options) => `Generate 10 interview questions for: ${input}${options ? `. Include ${options}` : ""}. Return each on a new line.`,
+  },
+  "ai-recipe": {
+    system: "You are a chef. Provide clear, step-by-step recipes with ingredients and instructions.",
+    buildPrompt: (input, options) => `Create a recipe for: ${input}${options ? `. Cuisine/style: ${options}` : ""}. Include ingredients list and step-by-step instructions.`,
+  },
+  "ai-cover-letter": {
+    system: "You write professional cover letters tailored to job applications.",
+    buildPrompt: (input, options) => `Write a cover letter for: ${input}${options ? `. Key points to include: ${options}` : ""}. Keep it professional and concise.`,
+  },
 };
 
 export async function POST(req: NextRequest) {

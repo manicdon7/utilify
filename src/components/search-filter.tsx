@@ -41,7 +41,7 @@ export function SearchFilter() {
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search 50+ tools... (e.g. PDF, JSON, image)"
+          placeholder="Search 60+ tools... (e.g. PDF, AI, image)"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}

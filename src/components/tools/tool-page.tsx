@@ -15,6 +15,18 @@ const toolComponents: Record<string, React.ComponentType> = {
   "paraphraser": dynamic(() => import("./text/paraphraser").then((m) => ({ default: m.Paraphraser }))),
   "text-to-speech": dynamic(() => import("./text/text-to-speech").then((m) => ({ default: m.TextToSpeech }))),
 
+  // AI tools
+  "ai-story-generator": dynamic(() => import("./ai/ai-story-generator").then((m) => ({ default: m.AiStoryGenerator }))),
+  "ai-poem-generator": dynamic(() => import("./ai/ai-poem-generator").then((m) => ({ default: m.AiPoemGenerator }))),
+  "explain-like-im-5": dynamic(() => import("./ai/explain-like-im-5").then((m) => ({ default: m.ExplainLikeIm5 }))),
+  "ai-code-explainer": dynamic(() => import("./ai/ai-code-explainer").then((m) => ({ default: m.AiCodeExplainer }))),
+  "ai-sql-generator": dynamic(() => import("./ai/ai-sql-generator").then((m) => ({ default: m.AiSqlGenerator }))),
+  "ai-bio-generator": dynamic(() => import("./ai/ai-bio-generator").then((m) => ({ default: m.AiBioGenerator }))),
+  "ai-product-description": dynamic(() => import("./ai/ai-product-description").then((m) => ({ default: m.AiProductDescription }))),
+  "ai-interview-questions": dynamic(() => import("./ai/ai-interview-questions").then((m) => ({ default: m.AiInterviewQuestions }))),
+  "ai-recipe-generator": dynamic(() => import("./ai/ai-recipe-generator").then((m) => ({ default: m.AiRecipeGenerator }))),
+  "ai-cover-letter": dynamic(() => import("./ai/ai-cover-letter").then((m) => ({ default: m.AiCoverLetter }))),
+
   // Developer tools
   "json-formatter": dynamic(() => import("./developer/json-formatter").then((m) => ({ default: m.JsonFormatter }))),
   "json-to-csv": dynamic(() => import("./developer/json-to-csv").then((m) => ({ default: m.JsonToCsv }))),

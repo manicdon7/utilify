@@ -85,7 +85,7 @@ export function HeroSection() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600" />
             </span>
-            50+ Free Online Tools — No Sign-up Needed
+            60+ Free Online Tools — No Sign-up Needed
           </div>
 
           <h1 ref={titleRef} className="text-5xl font-extrabold tracking-tight sm:text-7xl lg:text-8xl">

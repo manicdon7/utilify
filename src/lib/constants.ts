@@ -1,5 +1,5 @@
 import {
-  FileText, Image, Type, Code, Globe, TrendingUp, Shield,
+  FileText, Image, Type, Code, Globe, TrendingUp, Shield, Sparkles,
 } from "lucide-react";
 
 export interface Tool {
@@ -69,6 +69,25 @@ export const categories: Category[] = [
       { name: "Case Converter", slug: "case-converter", description: "Convert text between UPPERCASE, lowercase, and more", category: "Text & Writing Tools", categorySlug: "text" },
       { name: "Lorem Ipsum Generator", slug: "lorem-ipsum", description: "Generate placeholder text for designs", category: "Text & Writing Tools", categorySlug: "text" },
       { name: "Text to Speech", slug: "text-to-speech", description: "Convert text to spoken audio", category: "Text & Writing Tools", categorySlug: "text" },
+    ],
+  },
+  {
+    name: "AI Tools",
+    slug: "ai",
+    icon: Sparkles,
+    description: "Creative and intelligent tools powered by AI",
+    color: "text-violet-500",
+    tools: [
+      { name: "AI Story Generator", slug: "ai-story-generator", description: "Generate creative short stories from prompts", category: "AI Tools", categorySlug: "ai" },
+      { name: "AI Poem Generator", slug: "ai-poem-generator", description: "Create poems in any style or theme", category: "AI Tools", categorySlug: "ai" },
+      { name: "Explain Like I'm 5", slug: "explain-like-im-5", description: "Simplify complex topics in simple terms", category: "AI Tools", categorySlug: "ai" },
+      { name: "AI Code Explainer", slug: "ai-code-explainer", description: "Get plain-English explanations of code", category: "AI Tools", categorySlug: "ai" },
+      { name: "AI SQL Generator", slug: "ai-sql-generator", description: "Generate SQL queries from natural language", category: "AI Tools", categorySlug: "ai" },
+      { name: "AI Bio Generator", slug: "ai-bio-generator", description: "Create social media bios and profiles", category: "AI Tools", categorySlug: "ai" },
+      { name: "AI Product Description", slug: "ai-product-description", description: "Write compelling product descriptions", category: "AI Tools", categorySlug: "ai" },
+      { name: "AI Interview Questions", slug: "ai-interview-questions", description: "Generate interview questions for any role", category: "AI Tools", categorySlug: "ai" },
+      { name: "AI Recipe Generator", slug: "ai-recipe-generator", description: "Get recipes based on ingredients or cuisine", category: "AI Tools", categorySlug: "ai" },
+      { name: "AI Cover Letter", slug: "ai-cover-letter", description: "Generate professional cover letters", category: "AI Tools", categorySlug: "ai" },
     ],
   },
   {
