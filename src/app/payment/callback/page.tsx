@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle, XCircle, Loader2, Clock } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +11,7 @@ function PaymentCallbackContent() {
   const [status, setStatus] = useState<"loading" | "success" | "failed" | "pending">("loading");
   const [message, setMessage] = useState("Processing your payment...");
   const [creditsAdded, setCreditsAdded] = useState<number | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const paymentId = searchParams.get("razorpay_payment_id");
@@ -34,45 +35,58 @@ function PaymentCallbackContent() {
     // Check payment link status from URL params
     if (paymentLinkStatus === "paid") {
       setStatus("success");
-      setMessage("Payment successful! Your credits are being added...");
-      
-      // Poll for credits update since webhook might take a moment
-      let pollAttempts = 0;
-      const pollInterval = setInterval(async () => {
-        pollAttempts++;
-        
+      setMessage("Payment successful! Adding credits...");
+
+      const linkId = paymentLinkId || paymentLinkReferenceId;
+
+      const run = async () => {
         try {
-          const res = await fetch("/api/credits");
-          if (res.ok) {
-            const data = await res.json();
-            // Check if credits increased (more than default 3)
-            if (data.credits > 3) {
-              clearInterval(pollInterval);
-              setCreditsAdded(data.credits);
-              setMessage(`${data.credits} credits have been added to your account!`);
-              // Redirect to dashboard after 2 seconds
-              setTimeout(() => {
-                router.push("/dashboard");
-              }, 2000);
-            }
+          const confirmRes = await fetch("/api/payment/confirm", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ paymentLinkId: linkId }),
+          });
+          const confirmData = await confirmRes.json();
+          if (confirmRes.ok && confirmData.credits > 3) {
+            setCreditsAdded(confirmData.credits);
+            setMessage(`${confirmData.credits} credits have been added to your account!`);
+            window.dispatchEvent(new CustomEvent("credits-updated"));
+            setTimeout(() => router.push("/dashboard"), 2000);
+            return;
           }
         } catch (err) {
-          console.error("Error checking credits:", err);
+          console.error("Confirm payment error:", err);
         }
 
-        // Stop polling after 15 attempts (30 seconds)
-        if (pollAttempts >= 15) {
-          clearInterval(pollInterval);
-          setStatus("success");
-          setMessage("Payment successful! Credits will appear in your dashboard shortly.");
-          // Still redirect to dashboard
-          setTimeout(() => {
-            router.push("/dashboard");
-          }, 3000);
-        }
-      }, 2000);
+        let pollAttempts = 0;
+        pollRef.current = setInterval(async () => {
+          pollAttempts++;
+          try {
+            const res = await fetch("/api/credits");
+            if (res.ok) {
+              const data = await res.json();
+              if (data.credits > 3) {
+                if (pollRef.current) clearInterval(pollRef.current);
+                setCreditsAdded(data.credits);
+                setMessage(`${data.credits} credits have been added to your account!`);
+                window.dispatchEvent(new CustomEvent("credits-updated"));
+                setTimeout(() => router.push("/dashboard"), 2000);
+              }
+            }
+          } catch (err) {
+            console.error("Error checking credits:", err);
+          }
+          if (pollAttempts >= 15) {
+            if (pollRef.current) clearInterval(pollRef.current);
+            setStatus("success");
+            setMessage("Payment successful! Credits will appear in your dashboard shortly.");
+            setTimeout(() => router.push("/dashboard"), 3000);
+          }
+        }, 2000);
+      };
 
-      return () => clearInterval(pollInterval);
+      run();
+      return () => { if (pollRef.current) clearInterval(pollRef.current); };
     } else if (paymentLinkStatus === "cancelled") {
       setStatus("failed");
       setMessage("Payment was cancelled. No charges were made.");

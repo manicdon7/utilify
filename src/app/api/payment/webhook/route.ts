@@ -50,9 +50,9 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Payment not found" }, { status: 404 });
       }
 
-      // Update payment status
+      // Update payment status (schema enum: created | paid | failed)
       payment.paymentId = paymentId;
-      payment.status = "success";
+      payment.status = "paid";
       await payment.save();
 
       // Add credits to user

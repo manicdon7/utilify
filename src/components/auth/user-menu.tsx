@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { User, LogOut, CreditCard, LayoutDashboard, Zap } from "lucide-react";
@@ -8,7 +8,26 @@ import { User, LogOut, CreditCard, LayoutDashboard, Zap } from "lucide-react";
 export function UserMenu() {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
+  const [credits, setCredits] = useState<number | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const fetchCredits = async () => {
+    try {
+      const res = await fetch("/api/credits");
+      if (res.ok) {
+        const data = await res.json();
+        setCredits(data.credits);
+      }
+    } catch {
+      setCredits(null);
+    }
+  };
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetchCredits();
+    }
+  }, [session?.user?.email]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -16,6 +35,17 @@ export function UserMenu() {
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  useEffect(() => {
+    const handleFocus = () => fetchCredits();
+    const handleCreditsUpdated = () => fetchCredits();
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("credits-updated", handleCreditsUpdated);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("credits-updated", handleCreditsUpdated);
+    };
   }, []);
 
   if (status === "loading") {
@@ -33,6 +63,7 @@ export function UserMenu() {
     );
   }
 
+  const displayCredits = credits ?? session.user.credits ?? 0;
   const initials = session.user.name
     ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "U";
@@ -40,7 +71,7 @@ export function UserMenu() {
   return (
     <div className="relative" ref={menuRef}>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => { setOpen(!open); fetchCredits(); }}
         className="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-muted"
       >
         {session.user.image ? (
@@ -52,18 +83,18 @@ export function UserMenu() {
         )}
         <div className="hidden items-center gap-1.5 md:flex">
           <Zap className="h-3.5 w-3.5 text-amber-500" />
-          <span className="text-sm font-medium">{session.user.credits ?? 0}</span>
+          <span className="text-sm font-medium">{displayCredits}</span>
         </div>
       </button>
 
       {open && (
         <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border border-border bg-card p-1.5 shadow-xl">
           <div className="border-b border-border px-3 py-2.5">
-            <p className="text-sm font-medium truncate">{session.user.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{session.user.email}</p>
+            <p className="truncate text-sm font-medium">{session.user.name}</p>
+            <p className="truncate text-xs text-muted-foreground">{session.user.email}</p>
             <div className="mt-1.5 flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5 text-amber-500" />
-              <span className="text-xs font-medium">{session.user.credits ?? 0} credits</span>
+              <span className="text-xs font-medium">{displayCredits} credits</span>
               <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground capitalize">{session.user.plan}</span>
             </div>
           </div>
@@ -90,7 +121,7 @@ export function UserMenu() {
           <div className="border-t border-border pt-1">
             <button
               onClick={() => { setOpen(false); signOut({ callbackUrl: "/" }); }}
-              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-red-500 transition-colors hover:bg-red-500/10"
+              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-red-500 transition-colors hover:bg-red-500/10"
             >
               <LogOut className="h-4 w-4" />
               Sign Out

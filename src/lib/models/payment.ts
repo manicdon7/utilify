@@ -9,7 +9,7 @@ export interface IPayment extends Document {
   currency: string;
   credits: number;
   plan: string;
-  status: "created" | "paid" | "failed";
+  status: "created" | "paid" | "failed" | "cancelled" | "expired";
   createdAt: Date;
 }
 
@@ -25,7 +25,7 @@ const PaymentSchema = new Schema<IPayment>(
     plan: { type: String, required: true },
     status: {
       type: String,
-      enum: ["created", "paid", "failed"],
+      enum: ["created", "paid", "failed", "cancelled", "expired"],
       default: "created",
     },
   },
