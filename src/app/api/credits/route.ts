@@ -18,8 +18,8 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    credits: user.credits,
-    plan: user.plan,
+    credits: Number(user.credits ?? 0),
+    plan: user.plan || "free",
     hasOwnKey: !!user.geminiApiKey,
   });
 }

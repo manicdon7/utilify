@@ -51,13 +51,17 @@ export function YoutubeDownloader() {
     }
   };
 
-  const handleDownload = (downloadUrl: string, filename: string) => {
+  const handleDownload = (format: Format, videoPageUrl: string) => {
+    const filename = `${info?.title || "video"}.${format.container}`.replace(/[<>:"/\\|?*]/g, "_");
+    const proxyUrl = `/api/download/youtube/stream?url=${encodeURIComponent(videoPageUrl)}&itag=${format.itag}`;
     const a = document.createElement("a");
-    a.href = downloadUrl;
+    a.href = proxyUrl;
     a.download = filename;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
   };
 
   const videoFormats = info?.formats.filter((f) => f.type === "video") || [];
@@ -134,7 +138,7 @@ export function YoutubeDownloader() {
                 {videoFormats.map((f) => (
                   <button
                     key={f.itag}
-                    onClick={() => handleDownload(f.url, `${info.title}.${f.container}`)}
+                    onClick={() => handleDownload(f, url)}
                     className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm transition-all hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
                   >
                     <div className="text-left">
@@ -162,7 +166,7 @@ export function YoutubeDownloader() {
                 {audioFormats.map((f) => (
                   <button
                     key={f.itag}
-                    onClick={() => handleDownload(f.url, `${info.title}.${f.container}`)}
+                    onClick={() => handleDownload(f, url)}
                     className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3 text-sm transition-all hover:border-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30"
                   >
                     <div className="text-left">

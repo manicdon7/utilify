@@ -21,17 +21,28 @@ export async function POST(req: NextRequest) {
 
     // TikTok fallback: try dedicated API first (often more reliable)
     if (isTikTokUrl(url)) {
-      const tiktokRes = await fetch(`${TIKTOK_API}/?down=${encodeURIComponent(url)}`);
-      if (tiktokRes.ok) {
-        const tiktokData = (await tiktokRes.json()) as { noWaterMark?: string; video?: string };
-        const videoUrl = tiktokData.noWaterMark || tiktokData.video;
-        if (videoUrl) {
-          return NextResponse.json({
-            status: "success",
-            url: videoUrl,
-            filename: "tiktok-video.mp4",
-          });
+      try {
+        const tiktokRes = await fetch(`${TIKTOK_API}/?down=${encodeURIComponent(url)}`, {
+          headers: { "User-Agent": "Mozilla/5.0 (compatible; Utilify/1.0)" },
+        });
+        if (tiktokRes.ok) {
+          const tiktokData = (await tiktokRes.json()) as Record<string, unknown>;
+          const videoUrl =
+            tiktokData.noWaterMark ||
+            tiktokData.video ||
+            tiktokData.download ||
+            (tiktokData.result as { noWaterMark?: string; video?: string })?.noWaterMark ||
+            (tiktokData.result as { noWaterMark?: string; video?: string })?.video;
+          if (typeof videoUrl === "string") {
+            return NextResponse.json({
+              status: "success",
+              url: videoUrl,
+              filename: "tiktok-video.mp4",
+            });
+          }
         }
+      } catch (err) {
+        console.error("TikTok API error:", err);
       }
     }
 

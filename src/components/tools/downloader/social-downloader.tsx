@@ -93,7 +93,9 @@ export function SocialDownloader({ platform }: { platform: keyof typeof PLATFORM
     a.download = filename;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
   };
 
   return (
@@ -147,8 +149,11 @@ export function SocialDownloader({ platform }: { platform: keyof typeof PLATFORM
       {result?.status === "success" && result.url && (
         <div className="rounded-xl border border-green-300 bg-green-50 p-5 dark:border-green-800 dark:bg-green-950/30">
           <p className="mb-3 text-sm font-semibold text-green-700 dark:text-green-400">✅ Ready to download</p>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Click to open — use right-click → Save as if it opens in a new tab
+          </p>
           <button
-            onClick={() => triggerDownload(result.url!, result.filename)}
+            onClick={() => triggerDownload(result.url!, result.filename || "download.mp4")}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             <Download className="h-4 w-4" />

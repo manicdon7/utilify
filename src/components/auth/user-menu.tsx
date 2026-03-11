@@ -13,10 +13,10 @@ export function UserMenu() {
 
   const fetchCredits = async () => {
     try {
-      const res = await fetch("/api/credits");
+      const res = await fetch("/api/credits", { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
-        setCredits(data.credits);
+        setCredits(typeof data.credits === "number" ? data.credits : Number(data.credits) || 0);
       }
     } catch {
       setCredits(null);
@@ -26,6 +26,8 @@ export function UserMenu() {
   useEffect(() => {
     if (session?.user?.email) {
       fetchCredits();
+    } else {
+      setCredits(null);
     }
   }, [session?.user?.email]);
 
@@ -63,7 +65,7 @@ export function UserMenu() {
     );
   }
 
-  const displayCredits = credits ?? session.user.credits ?? 0;
+  const displayCredits = credits !== null ? credits : (typeof session.user.credits === "number" ? session.user.credits : 0);
   const initials = session.user.name
     ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "U";
@@ -83,7 +85,9 @@ export function UserMenu() {
         )}
         <div className="hidden items-center gap-1.5 md:flex">
           <Zap className="h-3.5 w-3.5 text-amber-500" />
-          <span className="text-sm font-medium">{displayCredits}</span>
+          <span className="min-w-[1.5rem] text-right text-sm font-medium tabular-nums">
+            {credits === null ? "…" : displayCredits}
+          </span>
         </div>
       </button>
 
@@ -94,7 +98,7 @@ export function UserMenu() {
             <p className="truncate text-xs text-muted-foreground">{session.user.email}</p>
             <div className="mt-1.5 flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5 text-amber-500" />
-              <span className="text-xs font-medium">{displayCredits} credits</span>
+              <span className="text-xs font-medium">{credits === null ? "…" : displayCredits} credits</span>
               <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground capitalize">{session.user.plan}</span>
             </div>
           </div>
