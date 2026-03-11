@@ -45,6 +45,13 @@ export async function POST(req: NextRequest) {
 
     const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
 
+    // Derive production origin from request headers — avoids localhost if NEXTAUTH_URL is misconfigured
+    const forwardedHost = req.headers.get("x-forwarded-host");
+    const forwardedProto = req.headers.get("x-forwarded-proto") || "https";
+    const appUrl = forwardedHost
+      ? `${forwardedProto}://${forwardedHost}`
+      : process.env.NEXTAUTH_URL || req.nextUrl.origin;
+
     // Create a Razorpay Payment Link instead of Order
     const paymentLink = await razorpay.paymentLink.create({
       amount: amount * 100, // Amount in paise
@@ -59,7 +66,7 @@ export async function POST(req: NextRequest) {
         email: true,
       },
       reminder_enable: false,
-      callback_url: `${process.env.NEXTAUTH_URL}/payment/redirect`,
+      callback_url: `${appUrl}/payment/redirect`,
       callback_method: "get",
       notes: {
         userId: user._id.toString(),

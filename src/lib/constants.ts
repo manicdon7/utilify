@@ -1,5 +1,5 @@
 import {
-  FileText, Image, Type, Code, Globe, TrendingUp, Shield, Sparkles,
+  FileText, Image, Type, Code, Globe, TrendingUp, Shield, Sparkles, Download,
 } from "lucide-react";
 
 export interface Tool {
@@ -150,6 +150,20 @@ export const categories: Category[] = [
       { name: "Password Generator", slug: "password-generator", description: "Generate strong, secure passwords", category: "Utility & Productivity", categorySlug: "utility" },
       { name: "Random Name Generator", slug: "name-generator", description: "Generate random names and usernames", category: "Utility & Productivity", categorySlug: "utility" },
       { name: "Invoice Generator", slug: "invoice-generator", description: "Create professional invoices online", category: "Utility & Productivity", categorySlug: "utility" },
+    ],
+  },
+  {
+    name: "Social Media Downloaders",
+    slug: "downloader",
+    icon: Download,
+    description: "Download videos and media from social platforms",
+    color: "text-rose-500",
+    tools: [
+      { name: "YouTube Downloader", slug: "youtube-downloader", description: "Download YouTube videos in multiple qualities", category: "Social Media Downloaders", categorySlug: "downloader" },
+      { name: "Instagram Downloader", slug: "instagram-downloader", description: "Download Instagram photos and videos", category: "Social Media Downloaders", categorySlug: "downloader" },
+      { name: "Twitter / X Downloader", slug: "twitter-downloader", description: "Download videos and GIFs from X (Twitter)", category: "Social Media Downloaders", categorySlug: "downloader" },
+      { name: "Facebook Downloader", slug: "facebook-downloader", description: "Download Facebook videos and reels", category: "Social Media Downloaders", categorySlug: "downloader" },
+      { name: "TikTok Downloader", slug: "tiktok-downloader", description: "Download TikTok videos without watermark", category: "Social Media Downloaders", categorySlug: "downloader" },
     ],
   },
 ];

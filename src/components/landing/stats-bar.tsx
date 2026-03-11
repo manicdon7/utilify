@@ -17,7 +17,7 @@ const stats = [
 export function StatsBar() {
   const ref = useRef<HTMLDivElement>(null);
 
-  const values = [60, 8, 18, 100];
+  const values = [65, 9, 18, 100];
   const suffixes = ["+", "", " Tools", "%"];
 
   useEffect(() => {

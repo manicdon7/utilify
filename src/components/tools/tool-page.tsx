@@ -71,6 +71,13 @@ const toolComponents: Record<string, React.ComponentType> = {
   "pdf-password": dynamic(() => import("./pdf/pdf-password").then((m) => ({ default: m.PdfPassword }))),
   "pdf-unlock": dynamic(() => import("./pdf/pdf-unlock").then((m) => ({ default: m.PdfUnlock }))),
 
+  // Downloader tools
+  "youtube-downloader": dynamic(() => import("./downloader/youtube-downloader").then((m) => ({ default: m.YoutubeDownloader }))),
+  "instagram-downloader": dynamic(() => import("./downloader/instagram-downloader").then((m) => ({ default: m.InstagramDownloader }))),
+  "twitter-downloader": dynamic(() => import("./downloader/twitter-downloader").then((m) => ({ default: m.TwitterDownloader }))),
+  "facebook-downloader": dynamic(() => import("./downloader/facebook-downloader").then((m) => ({ default: m.FacebookDownloader }))),
+  "tiktok-downloader": dynamic(() => import("./downloader/tiktok-downloader").then((m) => ({ default: m.TikTokDownloader }))),
+
   // Image tools
   "image-compressor": dynamic(() => import("./image/image-compressor").then((m) => ({ default: m.ImageCompressor }))),
   "image-resizer": dynamic(() => import("./image/image-resizer").then((m) => ({ default: m.ImageResizer }))),
